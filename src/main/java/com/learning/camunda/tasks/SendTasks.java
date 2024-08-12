@@ -5,12 +5,12 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 public class SendTasks implements JavaDelegate {
 
-	@Override
-	public void execute(DelegateExecution execution) throws Exception {
-		System.out.println("Calling another API !!!");
-		System.out.println("My local variable value is: "+execution.getVariable("local-gender"));
-		
-		
-	}
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
+        System.out.println("Calling another API !!!");
+        System.out.println("My local variable value is: " + execution.getVariable("local-gender"));
+
+
+    }
 
 }
