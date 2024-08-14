@@ -12,6 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <version.bpm-assert>4.0.0</version.bpm-assert>
   </properties>
 
   <dependencyManagement>
@@ -74,6 +75,23 @@
     <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.camunda.bpm.extension</groupId>
+      <artifactId>camunda-bpm-process-test-coverage</artifactId>
+      <version>0.3.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.camunda.bpm.assert</groupId>
+      <artifactId>camunda-bpm-assert</artifactId>
+      <version>${version.bpm-assert}</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
