@@ -11,19 +11,19 @@ decision tables.
 
 ## Table of contents
 
-1. [What is a workflow engine?](#1-what-is-a-workflow-engine)
-2. [BPMN 2.0 in five minutes](#2-bpmn-20-in-five-minutes)
-3. [Camunda 7 architecture](#3-camunda-7-architecture)
-4. [Camunda 7 vs Camunda 8 (Zeebe)](#4-camunda-7-vs-camunda-8-zeebe)
-5. [Process models in this repo](#5-process-models-in-this-repo)
-6. [Java delegates, listeners & async continuations](#6-java-delegates-listeners--async-continuations)
-7. [Running the project](#7-running-the-project)
-8. [The Camunda webapps](#8-the-camunda-webapps)
-9. [DMN decision tables](#9-dmn-decision-tables)
-10. [Best practices & gotchas](#10-best-practices--gotchas)
+1. 🔀 [What is a workflow engine?](#1-what-is-a-workflow-engine)
+2. 🔀 [BPMN 2.0 in five minutes](#2-bpmn-20-in-five-minutes)
+3. 🔀 [Camunda 7 architecture](#3-camunda-7-architecture)
+4. 🔀 [Camunda 7 vs Camunda 8 (Zeebe)](#4-camunda-7-vs-camunda-8-zeebe)
+5. 🤖 [Process models in this repo](#5-process-models-in-this-repo)
+6. 🧵 [Java delegates, listeners & async continuations](#6-java-delegates-listeners--async-continuations)
+7. 🚀 [Running the project](#7-running-the-project)
+8. 🔀 [The Camunda webapps](#8-the-camunda-webapps)
+9. 🔹 [DMN decision tables](#9-dmn-decision-tables)
+10. ⚠️ [Best practices & gotchas](#10-best-practices--gotchas)
     - [Camunda 8 module (`camunda-8/`)](#10a-camunda-8-module-camunda-8)
-11. [End-of-life warning & migration](#11-end-of-life-warning--migration)
-12. [Further reading](#12-further-reading)
+11. 🏷️ [End-of-life warning & migration](#11-end-of-life-warning--migration)
+12. 📚 [Further reading](#12-further-reading)
 
 ---
 
