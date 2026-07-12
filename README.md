@@ -21,6 +21,7 @@ decision tables.
 8. [The Camunda webapps](#8-the-camunda-webapps)
 9. [DMN decision tables](#9-dmn-decision-tables)
 10. [Best practices & gotchas](#10-best-practices--gotchas)
+    - [Camunda 8 module (`camunda-8/`)](#10a-camunda-8-module-camunda-8)
 11. [End-of-life warning & migration](#11-end-of-life-warning--migration)
 12. [Further reading](#12-further-reading)
 
@@ -225,6 +226,36 @@ business-rule task. Rules change without redeploying diagrams — the classic
 | Keep delegates idempotent | Job retries re-execute them |
 | Version process definitions, never edit deployed XML | Running instances stay on their version; new starts get the new one |
 | Don't put big payloads in process variables | They serialize into the DB per step; store a reference instead |
+
+## 10a. Camunda 8 module (`camunda-8/`)
+
+A self-contained sibling project — separate `pom.xml`, own `mvn` lifecycle — so the C7 app
+above keeps building unmodified. Same order-approval idea, rebuilt on the Camunda 8
+architecture: no shared transaction, no embedded engine, business logic runs as external
+**job workers** talking to the Zeebe broker over gRPC.
+
+```mermaid
+flowchart LR
+    C["POST /api/orders<br/>(REST, :8081)"] -->|ZeebeClient gRPC| B[Zeebe broker<br/>:26500]
+    B -->|job stream| W1["@JobWorker<br/>validate-order"]
+    B -->|job stream| W2["@JobWorker<br/>charge-payment"]
+    W1 -->|complete / throw BPMN error| B
+    W2 -->|complete| B
+```
+
+`order-process.bpmn` is hand-written with Zeebe extensions
+(`zeebe:taskDefinition type="validate-order"`, etc.) and auto-deployed on startup. Run it:
+
+```bash
+cd camunda-8
+docker compose up -d          # Zeebe broker only, ports prefixed camunda8-
+mvn spring-boot:run           # port 8081 — the C7 app owns 8080
+curl -s -X POST localhost:8081/api/orders -H 'Content-Type: application/json' \
+  -d '{"orderId":"1","amount":99.50}'
+```
+
+Tests use `zeebe-process-test-extension` — an embedded, in-JVM broker — so `mvn test` needs
+no Docker and stays fast.
 
 ## 11. End-of-life warning & migration
 

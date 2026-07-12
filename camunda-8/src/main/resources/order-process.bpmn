@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written BPMN with Zeebe extensions (no diagram section needed for execution).
+     start -> validate-order -> charge-payment -> end
+     A BPMN error INVALID_ORDER thrown by the validate-order worker is caught by a
+     boundary event and routes to the "Order rejected" end event. -->
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  id="Definitions_order-process"
+                  targetNamespace="http://learning.camunda/camunda8">
+
+  <bpmn:error id="Error_InvalidOrder" name="Invalid order" errorCode="INVALID_ORDER"/>
+
+  <bpmn:process id="order-process" name="Order process" isExecutable="true">
+
+    <bpmn:startEvent id="start-order" name="Order received">
+      <bpmn:outgoing>flow-to-validate</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:sequenceFlow id="flow-to-validate" sourceRef="start-order" targetRef="task-validate-order"/>
+
+    <bpmn:serviceTask id="task-validate-order" name="Validate order">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="validate-order"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>flow-to-validate</bpmn:incoming>
+      <bpmn:outgoing>flow-to-charge</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:boundaryEvent id="catch-invalid-order" name="Invalid order" attachedToRef="task-validate-order">
+      <bpmn:outgoing>flow-to-rejected</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDef_InvalidOrder" errorRef="Error_InvalidOrder"/>
+    </bpmn:boundaryEvent>
+
+    <bpmn:sequenceFlow id="flow-to-rejected" sourceRef="catch-invalid-order" targetRef="end-rejected"/>
+
+    <bpmn:endEvent id="end-rejected" name="Order rejected">
+      <bpmn:incoming>flow-to-rejected</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="flow-to-charge" sourceRef="task-validate-order" targetRef="task-charge-payment"/>
+
+    <bpmn:serviceTask id="task-charge-payment" name="Charge payment">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="charge-payment"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>flow-to-charge</bpmn:incoming>
+      <bpmn:outgoing>flow-to-end</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:sequenceFlow id="flow-to-end" sourceRef="task-charge-payment" targetRef="end-completed"/>
+
+    <bpmn:endEvent id="end-completed" name="Order completed">
+      <bpmn:incoming>flow-to-end</bpmn:incoming>
+    </bpmn:endEvent>
+
+  </bpmn:process>
+</bpmn:definitions>

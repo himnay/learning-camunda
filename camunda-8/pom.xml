@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <!-- 3.4.13 is the exact Spring Boot version the Camunda SDK 8.7.35 is built against -->
+    <version>3.4.13</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.learning.camunda</groupId>
+  <artifactId>learning-camunda-8</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>learning-camunda-8</name>
+  <description>Camunda 8 (Zeebe) learning module: gRPC job workers + Spring SDK</description>
+
+  <properties>
+    <!-- Java 21: Spring Boot 3.4 supports it and zeebe-process-test's embedded engine requires 21+ -->
+    <java.version>21</java.version>
+    <camunda-sdk.version>8.7.35</camunda-sdk.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Official Camunda 8 Spring SDK (ZeebeClient, @JobWorker, @Deployment).
+         Note: renamed to io.camunda:camunda-spring-boot-starter from 8.8 on. -->
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>spring-boot-starter-camunda-sdk</artifactId>
+      <version>${camunda-sdk.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Embedded Zeebe engine for process tests (no Docker needed, JDK 21+) -->
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-process-test-extension</artifactId>
+      <version>${camunda-sdk.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

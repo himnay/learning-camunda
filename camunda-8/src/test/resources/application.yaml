@@ -1,0 +1,7 @@
+# Test profile: no running Zeebe required -- disable the client entirely so the
+# Spring context loads without attempting a gRPC connection or a deployment.
+camunda:
+  client:
+    enabled: false
+    zeebe:
+      enabled: false

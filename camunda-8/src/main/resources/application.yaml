@@ -1,0 +1,14 @@
+server:
+  port: 8081 # the C7 app owns 8080
+
+spring:
+  application:
+    name: learning-camunda-8
+
+camunda:
+  client:
+    mode: self-managed
+    zeebe:
+      enabled: true
+      grpc-address: http://localhost:26500
+      rest-address: http://localhost:8088

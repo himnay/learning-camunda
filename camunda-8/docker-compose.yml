@@ -1,0 +1,17 @@
+# Minimal single-node Zeebe broker with embedded gRPC gateway.
+# No Operate/Tasklist/Elasticsearch -- job workers + the Java client are enough for learning.
+services:
+  zeebe:
+    image: camunda/zeebe:8.7.35
+    container_name: camunda8-zeebe
+    ports:
+      - "26500:26500" # gRPC gateway (ZeebeClient / job workers)
+      - "8088:8080"   # Zeebe REST API (mapped to 8088; 8080 is taken by the C7 app)
+    environment:
+      # single-node defaults are fine; just cap the JVM for a laptop
+      JAVA_TOOL_OPTIONS: "-Xms256m -Xmx512m"
+    volumes:
+      - camunda8-zeebe-data:/usr/local/zeebe/data
+
+volumes:
+  camunda8-zeebe-data:
