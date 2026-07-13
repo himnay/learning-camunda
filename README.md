@@ -27,7 +27,8 @@ decision tables.
 
 ---
 
-## 1. What is a workflow engine?
+<a id="1-what-is-a-workflow-engine"></a>
+## 1. 🔀 What is a workflow engine?
 
 Long-running business processes — a leave request, a loan approval, an order fulfilment —
 span hours to months, mix automated steps with human decisions, and must survive restarts.
@@ -50,7 +51,8 @@ flowchart LR
     O[Operators] -->|Cockpit UI| E
 ```
 
-## 2. BPMN 2.0 in five minutes
+<a id="2-bpmn-20-in-five-minutes"></a>
+## 2. 🔀 BPMN 2.0 in five minutes
 
 BPMN 2.0 is an ISO-standard graphical notation **and** execution semantics — the XML behind
 the diagram is what the engine runs. Element families this repo covers:
@@ -84,7 +86,8 @@ flowchart LR
 The **event-based gateway** is different again: it routes on *whichever event fires first*
 (e.g. reply message vs 10-minute timer) — a race, not a condition.
 
-## 3. Camunda 7 architecture
+<a id="3-camunda-7-architecture"></a>
+## 3. 🔀 Camunda 7 architecture
 
 Camunda 7 is an **embedded engine**: it runs inside this Spring Boot app's JVM and stores
 all state in a relational database (MySQL here).
@@ -108,7 +111,8 @@ Key pieces:
 - **Shared ACID transaction** — engine state and your business writes commit together; the property Camunda 8 gives up (see below)
 - **Spin plugin** (in this pom) — JSON/XML process-variable serialization
 
-## 4. Camunda 7 vs Camunda 8 (Zeebe)
+<a id="4-camunda-7-vs-camunda-8-zeebe"></a>
+## 4. 🔀 Camunda 7 vs Camunda 8 (Zeebe)
 
 ([Pretius comparison](https://pretius.com/blog/camunda-7-vs-camunda-8), [Camunda docs: conceptual differences](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/conceptual-differences/), [Altkom 2026 view](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/))
 
@@ -126,7 +130,8 @@ Key pieces:
 The migration is not an upgrade — process models mostly carry over, but every delegate
 becomes a worker and every transactional assumption must be re-examined.
 
-## 5. Process models in this repo
+<a id="5-process-models-in-this-repo"></a>
+## 5. 🤖 Process models in this repo
 
 `src/main/resources/`:
 
@@ -162,7 +167,8 @@ flowchart LR
     M -->|reject| R
 ```
 
-## 6. Java delegates, listeners & async continuations
+<a id="6-java-delegates-listeners--async-continuations"></a>
+## 6. 🧵 Java delegates, listeners & async continuations
 
 | Class | Role |
 |---|---|
@@ -175,7 +181,8 @@ the engine **commit and hand the token to the job executor**. That decouples the
 from long work, creates a retry boundary, and is where incidents appear when retries are
 exhausted.
 
-## 7. Running the project
+<a id="7-running-the-project"></a>
+## 7. 🚀 Running the project
 
 Prereqs: Java, Maven, MySQL on `localhost:3306` (`root`/`password` — the schema
 `camunda` auto-creates).
@@ -199,7 +206,8 @@ curl -s -X POST http://localhost:8080/engine-rest/process-definition/key/leave-m
 
 Tests: `mvn test` (uses H2 + `camunda.cfg.xml`, no MySQL needed).
 
-## 8. The Camunda webapps
+<a id="8-the-camunda-webapps"></a>
+## 8. 🔀 The Camunda webapps
 
 - **Cockpit** — operations: live instances, where tokens sit, incidents, retries, variable inspection
 - **Tasklist** — human work: claim/complete user tasks with generated or embedded forms
@@ -208,14 +216,16 @@ Tests: `mvn test` (uses H2 + `camunda.cfg.xml`, no MySQL needed).
 Cockpit on the history tables is the killer feature of C7 for debugging: click any finished
 instance and see the exact path the token took.
 
-## 9. DMN decision tables
+<a id="9-dmn-decision-tables"></a>
+## 9. 🔹 DMN decision tables
 
 `Numbernature.dmn` shows the companion standard to BPMN: **DMN** decision tables evaluate
 business rules (hit policies, FEEL-ish expressions) and are invoked from BPMN via a
 business-rule task. Rules change without redeploying diagrams — the classic
 "decision logic belongs to the business" separation.
 
-## 10. Best practices & gotchas
+<a id="10-best-practices--gotchas"></a>
+## 10. ⚠️ Best practices & gotchas
 
 | Practice | Why |
 |---|---|
@@ -257,7 +267,8 @@ curl -s -X POST localhost:8081/api/orders -H 'Content-Type: application/json' \
 Tests use `zeebe-process-test-extension` — an embedded, in-JVM broker — so `mvn test` needs
 no Docker and stays fast.
 
-## 11. End-of-life warning & migration
+<a id="11-end-of-life-warning--migration"></a>
+## 11. 🏷️ End-of-life warning & migration
 
 This repo pins **Camunda 7.21**. As of 2026 the **Camunda 7 Community Edition is
 end-of-life** — no security patches or updates ([Altkom, 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/)).
@@ -266,7 +277,8 @@ Options: commercial C7 extended support (until 2030), migrate to Camunda 8
 alternative embedded engine (Flowable, jBPM descendants). For a learning repo C7 remains
 the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to Camunda 8.
 
-## 12. Further reading
+<a id="12-further-reading"></a>
+## 12. 📚 Further reading
 
 - [Camunda 7 docs](https://docs.camunda.org/manual/7.21/) · [BPMN 2.0 reference](https://camunda.com/bpmn/reference/)
 - [Camunda 8 docs — migrating from 7](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/conceptual-differences/)
