@@ -37,10 +37,14 @@ codebase where nobody can see it.
 
 A **workflow engine** makes the process a first-class, executable artifact:
 
+<ul>
+
 - the process is drawn as a **BPMN diagram** — the same picture business and engineering read
 - the engine **persists state** at every wait point (user task, timer, message) — a crash resumes exactly where it stopped
 - history of every step is recorded — audit for free
 - retries, timeouts, escalations, compensation are declarative diagram elements, not bespoke code
+
+</ul>
 
 ```mermaid
 flowchart LR
@@ -105,11 +109,15 @@ flowchart TD
 
 Key pieces:
 
+<ul>
+
 - **Process engine** — interprets BPMN, advances tokens, writes runtime tables (`ACT_RU_*`) and history (`ACT_HI_*`)
 - **Job executor** — background thread pool that fires timers and `camunda:asyncBefore/asyncAfter` continuations; each job is a transaction boundary + retry unit (3 retries → *incident*)
 - **JavaDelegate** — your Spring bean invoked by a service task (`${beanName}` expression or class binding)
 - **Shared ACID transaction** — engine state and your business writes commit together; the property Camunda 8 gives up (see below)
 - **Spin plugin** (in this pom) — JSON/XML process-variable serialization
+
+</ul>
 
 <a id="4-camunda-7-vs-camunda-8-zeebe"></a>
 ## 4. 🔀 Camunda 7 vs Camunda 8 (Zeebe)
@@ -209,9 +217,13 @@ Tests: `mvn test` (uses H2 + `camunda.cfg.xml`, no MySQL needed).
 <a id="8-the-camunda-webapps"></a>
 ## 8. 🔀 The Camunda webapps
 
+<ul>
+
 - **Cockpit** — operations: live instances, where tokens sit, incidents, retries, variable inspection
 - **Tasklist** — human work: claim/complete user tasks with generated or embedded forms
 - **Admin** — users, groups, authorizations
+
+</ul>
 
 Cockpit on the history tables is the killer feature of C7 for debugging: click any finished
 instance and see the exact path the token took.
@@ -280,7 +292,11 @@ the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to
 <a id="12-further-reading"></a>
 ## 12. 📚 Further reading
 
+<ul>
+
 - [Camunda 7 docs](https://docs.camunda.org/manual/7.21/) · [BPMN 2.0 reference](https://camunda.com/bpmn/reference/)
 - [Camunda 8 docs — migrating from 7](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/conceptual-differences/)
 - [Camunda 7 vs 8 — Pretius](https://pretius.com/blog/camunda-7-vs-camunda-8) · [Altkom 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/) · [RST Software](https://www.rst.software/blog/camunda-7-vs-camunda-8---key-differences-and-considerations-before-migration)
 - [Scaling Zeebe at Intuit](https://camunda.com/blog/2024/08/scaling-workflow-engines-intuit-camunda-8-zeebe/)
+
+</ul>
