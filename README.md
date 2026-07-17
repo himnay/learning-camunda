@@ -61,13 +61,13 @@ flowchart LR
 BPMN 2.0 is an ISO-standard graphical notation **and** execution semantics — the XML behind
 the diagram is what the engine runs. Element families this repo covers:
 
-| Family | Elements | Meaning |
-|---|---|---|
-| **Events** (circles) | start, end, timer, message, signal, conditional, boundary, error | Something *happens* |
-| **Tasks** (rounded boxes) | service, user, manual, script, business-rule, send/receive | Work gets *done* |
-| **Gateways** (diamonds) | exclusive (XOR), parallel (AND), inclusive (OR), event-based | Flow *decides* |
-| **Subprocesses** | embedded, call activity | Composition & scoping |
-| **Flows** | sequence flow (+ condition expressions) | Ordering |
+| Family                    | Elements                                                         | Meaning               |
+|---------------------------|------------------------------------------------------------------|-----------------------|
+| **Events** (circles)      | start, end, timer, message, signal, conditional, boundary, error | Something *happens*   |
+| **Tasks** (rounded boxes) | service, user, manual, script, business-rule, send/receive       | Work gets *done*      |
+| **Gateways** (diamonds)   | exclusive (XOR), parallel (AND), inclusive (OR), event-based     | Flow *decides*        |
+| **Subprocesses**          | embedded, call activity                                          | Composition & scoping |
+| **Flows**                 | sequence flow (+ condition expressions)                          | Ordering              |
 
 Gateway semantics — the part everyone confuses:
 
@@ -124,16 +124,16 @@ Key pieces:
 
 ([Pretius comparison](https://pretius.com/blog/camunda-7-vs-camunda-8), [Camunda docs: conceptual differences](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/conceptual-differences/), [Altkom 2026 view](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/))
 
-| | **Camunda 7** (this repo) | **Camunda 8** |
-|---|---|---|
-| Engine | Embedded in your JVM (or shared app server) | **Zeebe** — distributed, cloud-native, runs on Kubernetes |
-| State storage | Relational DB (the scaling bottleneck) | Event-sourced log on partitioned brokers (RocksDB + replication) |
-| Business logic | `JavaDelegate` in-process | External **job workers** over gRPC — any language |
-| Transactions | Shared ACID with your code | No shared transaction — eventual consistency, idempotent workers required |
-| Expressions | JUEL (`${...}`), scripting | FEEL |
-| History/ops | Cockpit on same DB | Exported to Elasticsearch → Operate, Optimize |
-| Scale | Vertical + DB tuning | Horizontal by adding partitions ([Intuit case](https://camunda.com/blog/2024/08/scaling-workflow-engines-intuit-camunda-8-zeebe/)) |
-| Licence status 2026 | **Community edition EOL** — no patches | Actively developed (8.x) |
+|                     | **Camunda 7** (this repo)                   | **Camunda 8**                                                                                                                      |
+|---------------------|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| Engine              | Embedded in your JVM (or shared app server) | **Zeebe** — distributed, cloud-native, runs on Kubernetes                                                                          |
+| State storage       | Relational DB (the scaling bottleneck)      | Event-sourced log on partitioned brokers (RocksDB + replication)                                                                   |
+| Business logic      | `JavaDelegate` in-process                   | External **job workers** over gRPC — any language                                                                                  |
+| Transactions        | Shared ACID with your code                  | No shared transaction — eventual consistency, idempotent workers required                                                          |
+| Expressions         | JUEL (`${...}`), scripting                  | FEEL                                                                                                                               |
+| History/ops         | Cockpit on same DB                          | Exported to Elasticsearch → Operate, Optimize                                                                                      |
+| Scale               | Vertical + DB tuning                        | Horizontal by adding partitions ([Intuit case](https://camunda.com/blog/2024/08/scaling-workflow-engines-intuit-camunda-8-zeebe/)) |
+| Licence status 2026 | **Community edition EOL** — no patches      | Actively developed (8.x)                                                                                                           |
 
 The migration is not an upgrade — process models mostly carry over, but every delegate
 becomes a worker and every transactional assumption must be re-examined.
@@ -143,21 +143,21 @@ becomes a worker and every transactional assumption must be re-examined.
 
 `src/main/resources/`:
 
-| BPMN file | Demonstrates |
-|---|---|
-| `process.bpmn` | Minimal start → service task → end |
-| `task-learning.bpmn` | Service/user task basics |
-| `manual-task-learning.bpmn` | Manual tasks (documented-only steps) |
-| `exclusive-gateway.bpmn` | XOR routing on condition expressions |
-| `parallel-gateway.bpmn` | AND fork/join |
-| `inclusive-gateway.bpmn` | OR fork/join |
-| `event-based-gateway.bpmn` | First-event-wins routing |
-| `message-start-event.bpmn` | Start a process by correlated message |
-| `signal-start-event.bpmn` | Broadcast signal starts |
-| `conditional-start.event.bpmn` | Condition-triggered start |
-| `subprocess-test.bpmn` | Embedded subprocess scoping |
-| `asynchornous-test.bpmn` | `asyncBefore` job-executor continuations |
-| `leave-management.bpmn` | End-to-end example: request → balance check (delegate) → manager user task → outcome |
+| BPMN file                      | Demonstrates                                                                         |
+|--------------------------------|--------------------------------------------------------------------------------------|
+| `process.bpmn`                 | Minimal start → service task → end                                                   |
+| `task-learning.bpmn`           | Service/user task basics                                                             |
+| `manual-task-learning.bpmn`    | Manual tasks (documented-only steps)                                                 |
+| `exclusive-gateway.bpmn`       | XOR routing on condition expressions                                                 |
+| `parallel-gateway.bpmn`        | AND fork/join                                                                        |
+| `inclusive-gateway.bpmn`       | OR fork/join                                                                         |
+| `event-based-gateway.bpmn`     | First-event-wins routing                                                             |
+| `message-start-event.bpmn`     | Start a process by correlated message                                                |
+| `signal-start-event.bpmn`      | Broadcast signal starts                                                              |
+| `conditional-start.event.bpmn` | Condition-triggered start                                                            |
+| `subprocess-test.bpmn`         | Embedded subprocess scoping                                                          |
+| `asynchornous-test.bpmn`       | `asyncBefore` job-executor continuations                                             |
+| `leave-management.bpmn`        | End-to-end example: request → balance check (delegate) → manager user task → outcome |
 
 `src/test/resources/7.12-bpmn-dmn-files/` adds boundary events, error throw/catch,
 BPMN-in-BPMN (call activities), connectors, task listeners, incidents from failed
@@ -178,11 +178,11 @@ flowchart LR
 <a id="6-java-delegates-listeners--async-continuations"></a>
 ## 6. 🧵 Java delegates, listeners & async continuations
 
-| Class | Role |
-|---|---|
-| `tasks/*.java` (`LeaveBalanceCheck`, `WelcomeTasks`, `Asyn*Task`, …) | `JavaDelegate`s bound to service tasks |
-| `listeners/SampleExecutionListener` | Fires on flow-element start/end — cross-cutting hooks |
-| `listeners/SampleTaskListener` | Fires on user-task lifecycle (create/assign/complete) |
+| Class                                                                | Role                                                  |
+|----------------------------------------------------------------------|-------------------------------------------------------|
+| `tasks/*.java` (`LeaveBalanceCheck`, `WelcomeTasks`, `Asyn*Task`, …) | `JavaDelegate`s bound to service tasks                |
+| `listeners/SampleExecutionListener`                                  | Fires on flow-element start/end — cross-cutting hooks |
+| `listeners/SampleTaskListener`                                       | Fires on user-task lifecycle (create/assign/complete) |
 
 Async continuation is the pattern to internalize: marking a task `asyncBefore="true"` makes
 the engine **commit and hand the token to the job executor**. That decouples the HTTP thread
@@ -199,10 +199,10 @@ Prereqs: Java, Maven, MySQL on `localhost:3306` (`root`/`password` — the schem
 mvn spring-boot:run
 ```
 
-| Thing | URL |
-|---|---|
+| Thing                            | URL                                           |
+|----------------------------------|-----------------------------------------------|
 | Webapps (Cockpit/Tasklist/Admin) | http://localhost:8080 — login `admin`/`admin` |
-| REST API | http://localhost:8080/engine-rest |
+| REST API                         | http://localhost:8080/engine-rest             |
 
 Start a process instance via REST:
 
@@ -239,15 +239,15 @@ business-rule task. Rules change without redeploying diagrams — the classic
 <a id="10-best-practices--gotchas"></a>
 ## 10. ⚠️ Best practices & gotchas
 
-| Practice | Why |
-|---|---|
-| `historyTimeToLive` set (this repo: `P1D`) | Mandatory since 7.20 for cleanup; unbounded history eats the DB |
-| Async boundaries before external calls | Retry + incident isolation instead of failing the user's HTTP request |
-| Expression-bound delegates (`${bean}`) over class binding | Spring-managed, mockable, no engine classloading surprises |
-| Correlate messages with business keys | `runtimeService.correlateMessage` needs uniqueness — business key beats variable scans |
-| Keep delegates idempotent | Job retries re-execute them |
-| Version process definitions, never edit deployed XML | Running instances stay on their version; new starts get the new one |
-| Don't put big payloads in process variables | They serialize into the DB per step; store a reference instead |
+| Practice                                                  | Why                                                                                    |
+|-----------------------------------------------------------|----------------------------------------------------------------------------------------|
+| `historyTimeToLive` set (this repo: `P1D`)                | Mandatory since 7.20 for cleanup; unbounded history eats the DB                        |
+| Async boundaries before external calls                    | Retry + incident isolation instead of failing the user's HTTP request                  |
+| Expression-bound delegates (`${bean}`) over class binding | Spring-managed, mockable, no engine classloading surprises                             |
+| Correlate messages with business keys                     | `runtimeService.correlateMessage` needs uniqueness — business key beats variable scans |
+| Keep delegates idempotent                                 | Job retries re-execute them                                                            |
+| Version process definitions, never edit deployed XML      | Running instances stay on their version; new starts get the new one                    |
+| Don't put big payloads in process variables               | They serialize into the DB per step; store a reference instead                         |
 
 ## 10a. Camunda 8 module (`camunda-8/`)
 
