@@ -15,7 +15,7 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class CamundaIntegrationTest extends SpringProcessEngineTestCase {
+public class CamundaIntegrationTest {
 
     private static final String PROCESS_KEY = "testCaseSample";
 
