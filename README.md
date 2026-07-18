@@ -21,9 +21,9 @@ decision tables.
 8. 🔀 [The Camunda webapps](#8-the-camunda-webapps)
 9. 🔹 [DMN decision tables](#9-dmn-decision-tables)
 10. ⚠️ [Best practices & gotchas](#10-best-practices--gotchas)
-    - [Camunda 8 module (`camunda-8/`)](#10a-camunda-8-module-camunda-8)
-11. 🏷️ [End-of-life warning & migration](#11-end-of-life-warning--migration)
-12. 📚 [Further reading](#12-further-reading)
+11. 🚀 [Camunda 8 module](#10a-camunda-8-module-camunda-8)
+12. 🏷️ [End-of-life warning & migration](#11-end-of-life-warning--migration)
+13. 📚 [Further reading](#12-further-reading)
 
 ---
 
@@ -249,7 +249,7 @@ business-rule task. Rules change without redeploying diagrams — the classic
 | Version process definitions, never edit deployed XML      | Running instances stay on their version; new starts get the new one                    |
 | Don't put big payloads in process variables               | They serialize into the DB per step; store a reference instead                         |
 
-## 10a. Camunda 8 module (`camunda-8/`)
+## 11. 🚀 Camunda 8 module (`camunda-8/`)
 
 A self-contained sibling project — separate `pom.xml`, own `mvn` lifecycle — so the C7 app
 above keeps building unmodified. Same order-approval idea, rebuilt on the Camunda 8
@@ -280,7 +280,7 @@ Tests use `zeebe-process-test-extension` — an embedded, in-JVM broker — so `
 no Docker and stays fast.
 
 <a id="11-end-of-life-warning--migration"></a>
-## 11. 🏷️ End-of-life warning & migration
+## 12. 🏷️ End-of-life warning & migration
 
 This repo pins **Camunda 7.21**. As of 2026 the **Camunda 7 Community Edition is
 end-of-life** — no security patches or updates ([Altkom, 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/)).
@@ -290,7 +290,7 @@ alternative embedded engine (Flowable, jBPM descendants). For a learning repo C7
 the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to Camunda 8.
 
 <a id="12-further-reading"></a>
-## 12. 📚 Further reading
+## 13. 📚 Further reading
 
 <ul>
 
