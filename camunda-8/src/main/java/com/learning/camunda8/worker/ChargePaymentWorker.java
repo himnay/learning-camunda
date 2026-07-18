@@ -19,6 +19,7 @@ public class ChargePaymentWorker {
 
     private static final Logger log = LoggerFactory.getLogger(ChargePaymentWorker.class);
 
+    /** Returns the charge payment. */
     @JobWorker(type = "charge-payment")
     public Map<String, Object> chargePayment(final ActivatedJob job) {
         final Map<String, Object> variables = job.getVariablesAsMap();

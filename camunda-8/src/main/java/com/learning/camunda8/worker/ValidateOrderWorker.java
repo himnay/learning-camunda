@@ -20,6 +20,7 @@ public class ValidateOrderWorker {
 
     private static final Logger log = LoggerFactory.getLogger(ValidateOrderWorker.class);
 
+    /** Validates order. */
     @JobWorker(type = "validate-order", autoComplete = false)
     public void validateOrder(final JobClient client, final ActivatedJob job) {
         final Map<String, Object> variables = job.getVariablesAsMap();

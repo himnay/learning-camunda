@@ -31,6 +31,7 @@ public class OrderController {
 
     public record OrderRequest(String orderId, double amount) {}
 
+    /** Creates order. */
     @PostMapping
     public ResponseEntity<Map<String, Object>> createOrder(@RequestBody OrderRequest order) {
         final ProcessInstanceEvent instance = zeebeClient

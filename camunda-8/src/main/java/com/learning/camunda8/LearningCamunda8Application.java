@@ -11,8 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @Deployment(resources = "classpath:order-process.bpmn")
-public class LearningCamunda8Application {
+class LearningCamunda8Application {
 
+    /** Application entry point. */
     public static void main(String[] args) {
         SpringApplication.run(LearningCamunda8Application.class, args);
     }
