@@ -1,4 +1,4 @@
-# <span style="color:hsl(3,68%,44%)">Learning Camunda — BPMN Workflow Orchestration</span>
+# <span style="color:hsl(3,80%,58%)">Learning Camunda — BPMN Workflow Orchestration</span>
 
 <img src="image/camunda-logo.png" alt="Camunda" width="110"/>
 
@@ -9,7 +9,7 @@ decision tables.
 
 ---
 
-## <span style="color:hsl(27,68%,44%)">Table of contents</span>
+## <span style="color:hsl(141,80%,58%)">Table of contents</span>
 
 1. 🔀 [What is a workflow engine?](#1-what-is-a-workflow-engine)
 2. 🔀 [BPMN 2.0 in five minutes](#2-bpmn-20-in-five-minutes)
@@ -28,7 +28,7 @@ decision tables.
 ---
 
 <a id="1-what-is-a-workflow-engine"></a>
-## <span style="color:hsl(51,68%,32%)">1. 🔀 What is a workflow engine?</span>
+## <span style="color:hsl(278,80%,58%)">1. 🔀 What is a workflow engine?</span>
 
 Long-running business processes — a leave request, a loan approval, an order fulfilment —
 span hours to months, mix automated steps with human decisions, and must survive restarts.
@@ -56,7 +56,7 @@ flowchart LR
 ```
 
 <a id="2-bpmn-20-in-five-minutes"></a>
-## <span style="color:hsl(75,68%,32%)">2. 🔀 BPMN 2.0 in five minutes</span>
+## <span style="color:hsl(56,80%,50%)">2. 🔀 BPMN 2.0 in five minutes</span>
 
 BPMN 2.0 is an ISO-standard graphical notation **and** execution semantics — the XML behind
 the diagram is what the engine runs. Element families this repo covers:
@@ -91,7 +91,7 @@ The **event-based gateway** is different again: it routes on *whichever event fi
 (e.g. reply message vs 10-minute timer) — a race, not a condition.
 
 <a id="3-camunda-7-architecture"></a>
-## <span style="color:hsl(99,68%,32%)">3. 🔀 Camunda 7 architecture</span>
+## <span style="color:hsl(193,80%,58%)">3. 🔀 Camunda 7 architecture</span>
 
 Camunda 7 is an **embedded engine**: it runs inside this Spring Boot app's JVM and stores
 all state in a relational database (MySQL here).
@@ -120,7 +120,7 @@ Key pieces:
 </ul>
 
 <a id="4-camunda-7-vs-camunda-8-zeebe"></a>
-## <span style="color:hsl(123,68%,32%)">4. 🔀 Camunda 7 vs Camunda 8 (Zeebe)</span>
+## <span style="color:hsl(331,80%,58%)">4. 🔀 Camunda 7 vs Camunda 8 (Zeebe)</span>
 
 ([Pretius comparison](https://pretius.com/blog/camunda-7-vs-camunda-8), [Camunda docs: conceptual differences](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/conceptual-differences/), [Altkom 2026 view](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/))
 
@@ -139,7 +139,7 @@ The migration is not an upgrade — process models mostly carry over, but every 
 becomes a worker and every transactional assumption must be re-examined.
 
 <a id="5-process-models-in-this-repo"></a>
-## <span style="color:hsl(147,68%,32%)">5. 🤖 Process models in this repo</span>
+## <span style="color:hsl(108,80%,58%)">5. 🤖 Process models in this repo</span>
 
 `src/main/resources/`:
 
@@ -176,7 +176,7 @@ flowchart LR
 ```
 
 <a id="6-java-delegates-listeners--async-continuations"></a>
-## <span style="color:hsl(171,68%,36%)">6. 🧵 Java delegates, listeners & async continuations</span>
+## <span style="color:hsl(246,80%,58%)">6. 🧵 Java delegates, listeners & async continuations</span>
 
 | Class                                                                | Role                                                  |
 |----------------------------------------------------------------------|-------------------------------------------------------|
@@ -190,7 +190,7 @@ from long work, creates a retry boundary, and is where incidents appear when ret
 exhausted.
 
 <a id="7-running-the-project"></a>
-## <span style="color:hsl(195,68%,36%)">7. 🚀 Running the project</span>
+## <span style="color:hsl(23,80%,58%)">7. 🚀 Running the project</span>
 
 Prereqs: Java, Maven, MySQL on `localhost:3306` (`root`/`password` — the schema
 `camunda` auto-creates).
@@ -215,7 +215,7 @@ curl -s -X POST http://localhost:8080/engine-rest/process-definition/key/leave-m
 Tests: `mvn test` (uses H2 + `camunda.cfg.xml`, no MySQL needed).
 
 <a id="8-the-camunda-webapps"></a>
-## <span style="color:hsl(219,68%,44%)">8. 🔀 The Camunda webapps</span>
+## <span style="color:hsl(161,80%,58%)">8. 🔀 The Camunda webapps</span>
 
 <ul>
 
@@ -229,7 +229,7 @@ Cockpit on the history tables is the killer feature of C7 for debugging: click a
 instance and see the exact path the token took.
 
 <a id="9-dmn-decision-tables"></a>
-## <span style="color:hsl(243,68%,44%)">9. 🔹 DMN decision tables</span>
+## <span style="color:hsl(298,80%,58%)">9. 🔹 DMN decision tables</span>
 
 `Numbernature.dmn` shows the companion standard to BPMN: **DMN** decision tables evaluate
 business rules (hit policies, FEEL-ish expressions) and are invoked from BPMN via a
@@ -237,7 +237,7 @@ business-rule task. Rules change without redeploying diagrams — the classic
 "decision logic belongs to the business" separation.
 
 <a id="10-best-practices--gotchas"></a>
-## <span style="color:hsl(267,68%,44%)">10. ⚠️ Best practices & gotchas</span>
+## <span style="color:hsl(76,80%,58%)">10. ⚠️ Best practices & gotchas</span>
 
 | Practice                                                  | Why                                                                                    |
 |-----------------------------------------------------------|----------------------------------------------------------------------------------------|
@@ -249,7 +249,7 @@ business-rule task. Rules change without redeploying diagrams — the classic
 | Version process definitions, never edit deployed XML      | Running instances stay on their version; new starts get the new one                    |
 | Don't put big payloads in process variables               | They serialize into the DB per step; store a reference instead                         |
 
-## <span style="color:hsl(291,68%,44%)">11. 🚀 Camunda 8 module (`camunda-8/`)</span>
+## <span style="color:hsl(213,80%,58%)">11. 🚀 Camunda 8 module (`camunda-8/`)</span>
 
 A self-contained sibling project — separate `pom.xml`, own `mvn` lifecycle — so the C7 app
 above keeps building unmodified. Same order-approval idea, rebuilt on the Camunda 8
@@ -280,7 +280,7 @@ Tests use `zeebe-process-test-extension` — an embedded, in-JVM broker — so `
 no Docker and stays fast.
 
 <a id="11-end-of-life-warning--migration"></a>
-## <span style="color:hsl(315,68%,44%)">12. 🏷️ End-of-life warning & migration</span>
+## <span style="color:hsl(351,80%,58%)">12. 🏷️ End-of-life warning & migration</span>
 
 This repo pins **Camunda 7.21**. As of 2026 the **Camunda 7 Community Edition is
 end-of-life** — no security patches or updates ([Altkom, 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/)).
@@ -290,7 +290,7 @@ alternative embedded engine (Flowable, jBPM descendants). For a learning repo C7
 the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to Camunda 8.
 
 <a id="12-further-reading"></a>
-## <span style="color:hsl(339,68%,44%)">13. 📚 Further reading</span>
+## <span style="color:hsl(128,80%,58%)">13. 📚 Further reading</span>
 
 <ul>
 
