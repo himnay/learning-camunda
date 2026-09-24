@@ -11,7 +11,7 @@
         <bpmn:outgoing>Flow_1gdcf6r</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sequenceFlow id="Flow_1gdcf6r" sourceRef="Event_0t3ifbh" targetRef="Activity_0ka0y8l" />
-      <bpmn:serviceTask id="Activity_0ka0y8l" name="choosing receipe" camunda:class="com.techbuzzblogs.workflow.tasks.ChooseReceipeTask">
+      <bpmn:serviceTask id="Activity_0ka0y8l" name="choosing receipe" camunda:class="com.learning.camunda.tasks.ChooseReceipeTask">
         <bpmn:incoming>Flow_1gdcf6r</bpmn:incoming>
         <bpmn:outgoing>Flow_1n6uffm</bpmn:outgoing>
       </bpmn:serviceTask>
@@ -26,7 +26,7 @@
       <bpmn:sequenceFlow id="Flow_1q0ittd" sourceRef="Activity_07r8i1p" targetRef="Event_063oblz" />
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_1d168wl" sourceRef="StartEvent_1" targetRef="Activity_0bs6n4p" />
-    <bpmn:serviceTask id="Activity_1jh3j5c" name="Eat Meal" camunda:class="com.techbuzzblogs.workflow.tasks.EatingMealTask">
+    <bpmn:serviceTask id="Activity_1jh3j5c" name="Eat Meal" camunda:class="com.learning.camunda.tasks.EatingMealTask">
       <bpmn:incoming>Flow_0j41pzl</bpmn:incoming>
       <bpmn:incoming>Flow_1obtory</bpmn:incoming>
       <bpmn:outgoing>Flow_0ohkb4x</bpmn:outgoing>

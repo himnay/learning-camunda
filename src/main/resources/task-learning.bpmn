@@ -5,7 +5,7 @@
       <bpmn:outgoing>Flow_1f5kken</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1f5kken" sourceRef="StartEvent_1" targetRef="welcome-task" />
-    <bpmn:serviceTask id="welcome-task" name="welcome-task" camunda:class="com.techbuzzblogs.workflow.tasks.WelcomeTasks">
+    <bpmn:serviceTask id="welcome-task" name="welcome-task" camunda:class="com.learning.camunda.tasks.WelcomeTasks">
       <bpmn:extensionElements>
         <camunda:field name="qaUrl">
           <camunda:string>http://localhost:9090</camunda:string>
@@ -24,14 +24,14 @@
         <camunda:formData>
           <camunda:formField id="age" label="Age" type="long" />
         </camunda:formData>
-        <camunda:executionListener class="com.techbuzzblogs.workflow.listeners.SampleExecutionListener" event="start" />
-        <camunda:taskListener class="com.techbuzzblogs.workflow.listeners.SampleTaskListener" event="complete" />
+        <camunda:executionListener class="com.learning.camunda.listeners.SampleExecutionListener" event="start" />
+        <camunda:taskListener class="com.learning.camunda.listeners.SampleTaskListener" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1jw1426</bpmn:incoming>
       <bpmn:outgoing>Flow_1q864zy</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1q864zy" sourceRef="user-task" targetRef="send-task" />
-    <bpmn:sendTask id="send-task" name="send-task" camunda:class="com.techbuzzblogs.workflow.tasks.SendTasks">
+    <bpmn:sendTask id="send-task" name="send-task" camunda:class="com.learning.camunda.tasks.SendTasks">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="local-gender">MaleLocal</camunda:inputParameter>
@@ -81,7 +81,7 @@ output='child';
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_19wex2n" sourceRef="receive-task" targetRef="Event_1atcsnh" />
     <bpmn:sequenceFlow id="Flow_1k7ia4b" sourceRef="adult-impl" targetRef="final-check" />
-    <bpmn:serviceTask id="final-check" name="final-check" camunda:class="com.techbuzzblogs.workflow.tasks.FinalCheck">
+    <bpmn:serviceTask id="final-check" name="final-check" camunda:class="com.learning.camunda.tasks.FinalCheck">
       <bpmn:incoming>Flow_1k7ia4b</bpmn:incoming>
       <bpmn:outgoing>Flow_08c9i69</bpmn:outgoing>
     </bpmn:serviceTask>

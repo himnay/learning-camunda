@@ -5,7 +5,7 @@
       <bpmn:outgoing>Flow_1wx0cch</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1wx0cch" sourceRef="StartEvent_1" targetRef="Activity_0ntnpy4" />
-    <bpmn:serviceTask id="Activity_0ntnpy4" name="Welcome Message" camunda:class="com.techbuzzblogs.workflow.tasks.AsynWelcomeTask">
+    <bpmn:serviceTask id="Activity_0ntnpy4" name="Welcome Message" camunda:class="com.learning.camunda.tasks.AsynWelcomeTask">
       <bpmn:incoming>Flow_1wx0cch</bpmn:incoming>
       <bpmn:outgoing>Flow_1ykhfn0</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -20,17 +20,17 @@
       <bpmn:outgoing>Flow_0v15coc</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0v15coc" sourceRef="Activity_1fbqcgd" targetRef="Activity_15mccl9" />
-    <bpmn:serviceTask id="Activity_15mccl9" name="Registration" camunda:asyncAfter="true" camunda:class="com.techbuzzblogs.workflow.tasks.AsynRegistrationTask">
+    <bpmn:serviceTask id="Activity_15mccl9" name="Registration" camunda:asyncAfter="true" camunda:class="com.learning.camunda.tasks.AsynRegistrationTask">
       <bpmn:incoming>Flow_0v15coc</bpmn:incoming>
       <bpmn:outgoing>Flow_12y2dtl</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_12y2dtl" sourceRef="Activity_15mccl9" targetRef="Activity_17r35bo" />
-    <bpmn:serviceTask id="Activity_17r35bo" name="Print the Age" camunda:class="com.techbuzzblogs.workflow.tasks.AsynPrintAgeTask">
+    <bpmn:serviceTask id="Activity_17r35bo" name="Print the Age" camunda:class="com.learning.camunda.tasks.AsynPrintAgeTask">
       <bpmn:incoming>Flow_12y2dtl</bpmn:incoming>
       <bpmn:outgoing>Flow_1vub3q9</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1vub3q9" sourceRef="Activity_17r35bo" targetRef="Activity_0n2kp02" />
-    <bpmn:serviceTask id="Activity_0n2kp02" name="Bye Mesage" camunda:class="com.techbuzzblogs.workflow.tasks.AsynByeMessageTask">
+    <bpmn:serviceTask id="Activity_0n2kp02" name="Bye Mesage" camunda:class="com.learning.camunda.tasks.AsynByeMessageTask">
       <bpmn:incoming>Flow_1vub3q9</bpmn:incoming>
       <bpmn:outgoing>Flow_0qzvwlf</bpmn:outgoing>
     </bpmn:serviceTask>

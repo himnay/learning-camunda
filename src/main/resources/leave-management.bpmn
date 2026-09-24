@@ -5,7 +5,7 @@
       <bpmn:outgoing>Flow_0tzvbsu</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0tzvbsu" sourceRef="StartEvent_1" targetRef="check-leave-balance" />
-    <bpmn:serviceTask id="check-leave-balance" name="Check-Leave Balance" camunda:class="com.techbuzzblogs.workflow.delegates.LeaveBalanceCheck">
+    <bpmn:serviceTask id="check-leave-balance" name="Check-Leave Balance" camunda:class="com.learning.camunda.tasks.LeaveBalanceCheck">
       <bpmn:incoming>Flow_0tzvbsu</bpmn:incoming>
       <bpmn:outgoing>Flow_04hj14q</bpmn:outgoing>
     </bpmn:serviceTask>

@@ -4,6 +4,9 @@ spring:
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      # Camunda 7.20+ refuses to start on MySQL's default REPEATABLE_READ (ENGINE-12019)
+      transaction-isolation: TRANSACTION_READ_COMMITTED
 
 camunda:
   bpm:

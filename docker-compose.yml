@@ -1,17 +1,44 @@
-# Minimal single-node Zeebe broker with embedded gRPC gateway.
-# No Operate/Tasklist/Elasticsearch -- job workers + the Java client are enough for learning.
+# Backing services for both modules — start only what you need:
+#   docker compose up -d mysql     -> Camunda 7 app (root module, port 8080)
+#   docker compose up -d camunda   -> Camunda 8 app (camunda-8/, port 8081)
 services:
-  zeebe:
-    image: camunda/zeebe:8.7.35
-    container_name: camunda8-zeebe
+  # ── Camunda 7: engine state lives in MySQL ─────────────────────────────────
+  mysql:
+    image: mysql:8.4
+    container_name: camunda7-mysql
     ports:
-      - "26500:26500" # gRPC gateway (ZeebeClient / job workers)
-      - "8088:8080"   # Zeebe REST API (mapped to 8088; 8080 is taken by the C7 app)
+      - "3306:3306"
     environment:
-      # single-node defaults are fine; just cap the JVM for a laptop
-      JAVA_TOOL_OPTIONS: "-Xms256m -Xmx512m"
+      MYSQL_ROOT_PASSWORD: password   # matches src/main/resources/application.yaml
     volumes:
-      - camunda8-zeebe-data:/usr/local/zeebe/data
+      - camunda7-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Camunda 8.9 orchestration cluster (Zeebe + REST API + Operate/Tasklist) ─
+  # The standalone camunda/zeebe image stopped at 8.8; camunda/camunda is its successor.
+  # Secondary storage: embedded H2 instead of the default Elasticsearch (fine for learning).
+  camunda:
+    image: camunda/camunda:8.9.21
+    container_name: camunda8
+    ports:
+      - "26500:26500" # gRPC (CamundaClient / job workers)
+      - "8088:8080"   # REST API + web UIs (mapped to 8088; 8080 is taken by the C7 app)
+    environment:
+      CAMUNDA_DATA_SECONDARYSTORAGE_TYPE: rdbms
+      CAMUNDA_DATA_SECONDARYSTORAGE_RDBMS_URL: jdbc:h2:file:/usr/local/camunda/data/h2db
+      CAMUNDA_DATA_SECONDARYSTORAGE_RDBMS_USERNAME: sa
+      CAMUNDA_DATA_SECONDARYSTORAGE_RDBMS_PASSWORD: ""
+      # local learning only: no auth on the API, no authorizations
+      CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI: "true"
+      CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED: "false"
+      JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1g"
+    volumes:
+      - camunda8-data:/usr/local/camunda/data
 
 volumes:
-  camunda8-zeebe-data:
+  camunda7-mysql-data:
+  camunda8-data:

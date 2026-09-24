@@ -192,8 +192,12 @@ exhausted.
 <a id="7-running-the-project"></a>
 ## <span style="color:hsl(23,80%,58%)">7. 🚀 Running the project</span>
 
-Prereqs: Java, Maven, MySQL on `localhost:3306` (`root`/`password` — the schema
-`camunda` auto-creates).
+Prereqs: Java 21, Maven, MySQL on `localhost:3306` (`root`/`password` — the schema
+`camunda` auto-creates). `docker compose up -d mysql` starts one (MySQL 8.4).
+
+> MySQL defaults to `REPEATABLE_READ`; Camunda 7.20+ refuses to start on it (ENGINE-12019).
+> `application.yaml` sets Hikari's `transaction-isolation: TRANSACTION_READ_COMMITTED` —
+> don't "fix" it with `skipIsolationLevelCheck`.
 
 ```bash
 mvn spring-boot:run
@@ -212,7 +216,11 @@ curl -s -X POST http://localhost:8080/engine-rest/process-definition/key/leave-m
   -d '{"variables":{"empName":{"value":"himansu"},"days":{"value":3,"type":"Integer"}}}'
 ```
 
-Tests: `mvn test` (uses H2 + `camunda.cfg.xml`, no MySQL needed).
+Tests: `mvn verify` (uses H2 + `camunda.cfg.xml`, no MySQL needed). JUnit 5 with
+`camunda-bpm-junit5`, `camunda-bpm-assert` and the community process-test-coverage extension
+(report under `target/process-test-coverage/`). `BpmnClassReferencesTest` fails the build when a
+`camunda:class` in a model doesn't resolve — the engine itself only notices at runtime
+(ENGINE-09008), which is how four models shipped pointing at a stale package.
 
 <a id="8-the-camunda-webapps"></a>
 ## <span style="color:hsl(161,80%,58%)">8. 🔀 The Camunda webapps</span>
@@ -258,7 +266,7 @@ architecture: no shared transaction, no embedded engine, business logic runs as 
 
 ```mermaid
 flowchart LR
-    C["POST /api/orders<br/>(REST, :8081)"] -->|ZeebeClient gRPC| B[Zeebe broker<br/>:26500]
+    C["POST /api/orders<br/>(REST, :8081)"] -->|CamundaClient gRPC| B[Camunda 8.9 cluster<br/>:26500]
     B -->|job stream| W1["@JobWorker<br/>validate-order"]
     B -->|job stream| W2["@JobWorker<br/>charge-payment"]
     W1 -->|complete / throw BPMN error| B
@@ -269,21 +277,31 @@ flowchart LR
 (`zeebe:taskDefinition type="validate-order"`, etc.) and auto-deployed on startup. Run it:
 
 ```bash
+docker compose up -d camunda  # camunda/camunda:8.9.21 with H2 secondary storage (repo root)
 cd camunda-8
-docker compose up -d          # Zeebe broker only, ports prefixed camunda8-
 mvn spring-boot:run           # port 8081 — the C7 app owns 8080
 curl -s -X POST localhost:8081/api/orders -H 'Content-Type: application/json' \
   -d '{"orderId":"1","amount":99.50}'
 ```
 
-Tests use `zeebe-process-test-extension` — an embedded, in-JVM broker — so `mvn test` needs
-no Docker and stays fast.
+Stack (as of Sep 2026): Camunda **8.9.21** on Spring Boot **4.0.8** (the Boot line 8.9 is built
+on) via `camunda-spring-boot-starter`. 8.8 renamed the SDK: `ZeebeClient` → `CamundaClient`,
+`io.camunda.zeebe.spring.client.annotation.*` → `io.camunda.client.annotation.*`, and
+`camunda.client.zeebe.*` properties → `camunda.client.*`. Gotcha: Boot 4.0.8 pins httpclient5
+5.5.2, but the 8.9 client needs 5.6 (`NoSuchMethodError: disableContentCompression`), so the pom
+overrides `httpclient5.version`.
+
+Tests use **Camunda Process Test** (`camunda-process-test-spring`, successor of
+`zeebe-process-test`): `@CamundaSpringProcessTest` boots the real app against a managed
+`camunda/camunda` container (Testcontainers — Docker required), so the Spring `@JobWorker`s
+themselves drive both the happy path and the BPMN-error path.
 
 <a id="11-end-of-life-warning--migration"></a>
 ## <span style="color:hsl(351,80%,58%)">12. 🏷️ End-of-life warning & migration</span>
 
-This repo pins **Camunda 7.21**. As of 2026 the **Camunda 7 Community Edition is
-end-of-life** — no security patches or updates ([Altkom, 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/)).
+This repo pins **Camunda 7.24.0** — the final Community Edition release — on Spring Boot
+**3.5.16**, the newest Boot line 7.24 supports (no Boot 4). As of 2026 the **Camunda 7 Community
+Edition is end-of-life** — no security patches or updates ([Altkom, 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/)).
 Options: commercial C7 extended support (until 2030), migrate to Camunda 8
 (re-platform: delegates → gRPC job workers, JUEL → FEEL, no shared transactions), or an
 alternative embedded engine (Flowable, jBPM descendants). For a learning repo C7 remains
@@ -294,7 +312,7 @@ the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to
 
 <ul>
 
-- [Camunda 7 docs](https://docs.camunda.org/manual/7.21/) · [BPMN 2.0 reference](https://camunda.com/bpmn/reference/)
+- [Camunda 7 docs](https://docs.camunda.org/manual/7.24/) · [BPMN 2.0 reference](https://camunda.com/bpmn/reference/)
 - [Camunda 8 docs — migrating from 7](https://docs.camunda.io/docs/guides/migrating-from-camunda-7/conceptual-differences/)
 - [Camunda 7 vs 8 — Pretius](https://pretius.com/blog/camunda-7-vs-camunda-8) · [Altkom 2026](https://www.altkomsoftware.com/blog/camunda-7-vs-camunda-8-in-2026/) · [RST Software](https://www.rst.software/blog/camunda-7-vs-camunda-8---key-differences-and-considerations-before-migration)
 - [Scaling Zeebe at Intuit](https://camunda.com/blog/2024/08/scaling-workflow-engines-intuit-camunda-8-zeebe/)
