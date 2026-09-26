@@ -21,9 +21,9 @@ decision tables.
 8. 🔀 [The Camunda webapps](#8-the-camunda-webapps)
 9. 🔹 [DMN decision tables](#9-dmn-decision-tables)
 10. ⚠️ [Best practices & gotchas](#10-best-practices--gotchas)
-11. 🚀 [Camunda 8 module](#10a-camunda-8-module-camunda-8)
-12. 🏷️ [End-of-life warning & migration](#11-end-of-life-warning--migration)
-13. 📚 [Further reading](#12-further-reading)
+11. 🚀 [Camunda 8 module](#11-camunda-8-module-camunda-8)
+12. 🏷️ [End-of-life warning & migration](#12-end-of-life-warning--migration)
+13. 📚 [Further reading](#13-further-reading)
 
 ---
 
@@ -68,6 +68,15 @@ the diagram is what the engine runs. Element families this repo covers:
 | **Gateways** (diamonds)   | exclusive (XOR), parallel (AND), inclusive (OR), event-based     | Flow *decides*        |
 | **Subprocesses**          | embedded, call activity                                          | Composition & scoping |
 | **Flows**                 | sequence flow (+ condition expressions)                          | Ordering              |
+
+Most of them in one small process — a message start event, a weekly timer, a task, an exclusive
+gateway with two outgoing flows, a send task fed by a data object, and an end event:
+
+<p align="center">
+  <img src="image/bpmn-process-normal-flow.svg" alt="BPMN process: message start event, timer event, task, exclusive gateway, send task with a data object input, end event" width="620"/>
+</p>
+
+<p align="center"><sub>Diagram: <a href="https://commons.wikimedia.org/wiki/File:BPMN-AProcesswithNormalFlow.svg">BPMN-AProcesswithNormalFlow.svg</a>, Wikimedia Commons, public domain.</sub></p>
 
 Gateway semantics — the part everyone confuses:
 
@@ -257,6 +266,7 @@ business-rule task. Rules change without redeploying diagrams — the classic
 | Version process definitions, never edit deployed XML      | Running instances stay on their version; new starts get the new one                    |
 | Don't put big payloads in process variables               | They serialize into the DB per step; store a reference instead                         |
 
+<a id="11-camunda-8-module-camunda-8"></a>
 ## <span style="color:hsl(213,80%,58%)">11. 🚀 Camunda 8 module (`camunda-8/`)</span>
 
 A self-contained sibling project — separate `pom.xml`, own `mvn` lifecycle — so the C7 app
@@ -296,7 +306,7 @@ Tests use **Camunda Process Test** (`camunda-process-test-spring`, successor of
 `camunda/camunda` container (Testcontainers — Docker required), so the Spring `@JobWorker`s
 themselves drive both the happy path and the BPMN-error path.
 
-<a id="11-end-of-life-warning--migration"></a>
+<a id="12-end-of-life-warning--migration"></a>
 ## <span style="color:hsl(351,80%,58%)">12. 🏷️ End-of-life warning & migration</span>
 
 This repo pins **Camunda 7.24.0** — the final Community Edition release — on Spring Boot
@@ -307,7 +317,7 @@ Options: commercial C7 extended support (until 2030), migrate to Camunda 8
 alternative embedded engine (Flowable, jBPM descendants). For a learning repo C7 remains
 the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to Camunda 8.
 
-<a id="12-further-reading"></a>
+<a id="13-further-reading"></a>
 ## <span style="color:hsl(128,80%,58%)">13. 📚 Further reading</span>
 
 <ul>
