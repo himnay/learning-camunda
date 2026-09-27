@@ -137,7 +137,7 @@ Key pieces:
 |---------------------|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
 | Engine              | Embedded in your JVM (or shared app server) | **Zeebe** — distributed, cloud-native, runs on Kubernetes                                                                          |
 | State storage       | Relational DB (the scaling bottleneck)      | Event-sourced log on partitioned brokers (RocksDB + replication)                                                                   |
-| Business logic      | `JavaDelegate` in-process                   | External **job workers** over gRPC — any language                                                                                  |
+| Business logic      | [`JavaDelegate`][JavaDelegate] in-process   | External **job workers** over gRPC — any language                                                                                  |
 | Transactions        | Shared ACID with your code                  | No shared transaction — eventual consistency, idempotent workers required                                                          |
 | Expressions         | JUEL (`${...}`), scripting                  | FEEL                                                                                                                               |
 | History/ops         | Cockpit on same DB                          | Exported to Elasticsearch → Operate, Optimize                                                                                      |
@@ -187,11 +187,11 @@ flowchart LR
 <a id="6-java-delegates-listeners--async-continuations"></a>
 ## <span style="color:hsl(246,80%,58%)">6. 🧵 Java delegates, listeners & async continuations</span>
 
-| Class                                                                | Role                                                  |
-|----------------------------------------------------------------------|-------------------------------------------------------|
-| `tasks/*.java` (`LeaveBalanceCheck`, `WelcomeTasks`, `Asyn*Task`, …) | `JavaDelegate`s bound to service tasks                |
-| `listeners/SampleExecutionListener`                                  | Fires on flow-element start/end — cross-cutting hooks |
-| `listeners/SampleTaskListener`                                       | Fires on user-task lifecycle (create/assign/complete) |
+| Class                                                                | Role                                                   |
+|----------------------------------------------------------------------|--------------------------------------------------------|
+| `tasks/*.java` (`LeaveBalanceCheck`, `WelcomeTasks`, `Asyn*Task`, …) | [`JavaDelegate`][JavaDelegate]s bound to service tasks |
+| `listeners/SampleExecutionListener`                                  | Fires on flow-element start/end — cross-cutting hooks  |
+| `listeners/SampleTaskListener`                                       | Fires on user-task lifecycle (create/assign/complete)  |
 
 Async continuation is the pattern to internalize: marking a task `asyncBefore="true"` makes
 the engine **commit and hand the token to the job executor**. That decouples the HTTP thread
@@ -328,3 +328,7 @@ the fastest way to grasp BPMN semantics — the notation itself transfers 1:1 to
 - [Scaling Zeebe at Intuit](https://camunda.com/blog/2024/08/scaling-workflow-engines-intuit-camunda-8-zeebe/)
 
 </ul>
+
+<!-- Library classes mentioned above, linked to their source at the versions this project builds with. -->
+
+[JavaDelegate]: https://github.com/camunda/camunda-bpm-platform/blob/7.24.0/engine/src/main/java/org/camunda/bpm/engine/delegate/JavaDelegate.java
