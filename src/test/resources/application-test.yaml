@@ -1,13 +1,22 @@
+# Profile for ApplicationSmokeTest: the full Spring Boot app on an in-memory H2 instead of MySQL.
 spring:
   datasource:
-    url: jdbc:h2:file:/data/demo
-  h2:
-    console:
-      enabled: true
-      path: /h2
+    url: jdbc:h2:mem:camunda;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
 
 camunda:
   bpm:
+    # The default pattern (classpath*:**/*.bpmn) also scans target/test-classes, whose reference
+    # models under 7.12-bpmn-dmn-files/ need plugins this app doesn't load (e.g. connectors).
+    # Root-level models only: the ones in src/main/resources plus the test-only timer-start-event.
+    deployment-resource-pattern:
+      - classpath*:*.bpmn
+      - classpath*:*.dmn
+    # No background job execution: timer-start-event fires every minute and nothing here needs async jobs.
+    job-execution:
+      enabled: false
     admin-user:
       id: admin
       password: admin

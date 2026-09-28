@@ -18,7 +18,9 @@
   <version>1.0.0-SNAPSHOT</version>
 
   <properties>
-    <java.version>21</java.version>  <!-- highest JDK Camunda 7.24 supports -->
+    <!-- Camunda 7.24 is only certified up to Java 21, but Spring 6.2's ASM and the engine handle
+         release-27 bytecode: ApplicationSmokeTest boots the whole app on JDK 27 (README section 7) -->
+    <java.version>27</java.version>
     <camunda.version>7.24.0</camunda.version>
     <process-test-coverage.version>3.0.1</process-test-coverage.version>
   </properties>

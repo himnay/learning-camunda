@@ -19,12 +19,12 @@
   <description>Camunda 8 (Zeebe) learning module: gRPC job workers + Spring SDK</description>
 
   <properties>
-    <java.version>21</java.version>
+    <java.version>27</java.version>
     <camunda.version>8.9.21</camunda.version>
     <!-- camunda-client-java 8.9 calls HttpAsyncClientBuilder.disableContentCompression(), added after the
          httpclient5 5.5.2 that Spring Boot 4.0.8 manages (NoSuchMethodError at startup otherwise) -->
     <httpclient5.version>5.6.4</httpclient5.version>
-    <httpcore5.version>5.4.3</httpcore5.version>
+    <httpcore5.version>5.4.4</httpcore5.version>
   </properties>
 
   <dependencies>
