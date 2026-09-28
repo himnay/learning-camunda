@@ -15,13 +15,15 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
- * Every {@code camunda:class} in a deployed model must name a class on the classpath.
- * The engine only notices at runtime (ENGINE-09008 when an instance reaches the task),
- * so a stale package name ships silently unless something checks it at build time.
+ * Every {@code camunda:class} in a deployed model (service tasks) and every {@code class} on a
+ * {@code camunda:executionListener} / {@code camunda:taskListener} must name a class on the
+ * classpath. The engine only notices at runtime (ENGINE-09008 when an instance reaches the
+ * element), so a stale package name ships silently unless something checks it at build time.
  */
 class BpmnClassReferencesTest {
 
-    private static final Pattern CAMUNDA_CLASS = Pattern.compile("camunda:class=\"([^\"]+)\"");
+    private static final Pattern CAMUNDA_CLASS = Pattern.compile(
+            "(?:camunda:class|<camunda:(?:executionListener|taskListener)[^>]*?\\sclass)=\"([^\"]+)\"");
 
     static Stream<Resource> models() throws IOException {
         return Arrays.stream(new PathMatchingResourcePatternResolver().getResources("file:src/main/resources/*.bpmn"));

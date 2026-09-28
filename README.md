@@ -155,7 +155,7 @@ becomes a worker and every transactional assumption must be re-examined.
 | BPMN file                      | Demonstrates                                                                         |
 |--------------------------------|--------------------------------------------------------------------------------------|
 | `process.bpmn`                 | Minimal start → service task → end                                                   |
-| `task-learning.bpmn`           | Service/user task basics                                                             |
+| `task-learning.bpmn`           | Task types: service, user, send, script (JUEL), business-rule (`check-adult.dmn`)    |
 | `manual-task-learning.bpmn`    | Manual tasks (documented-only steps)                                                 |
 | `exclusive-gateway.bpmn`       | XOR routing on condition expressions                                                 |
 | `parallel-gateway.bpmn`        | AND fork/join                                                                        |
@@ -166,22 +166,20 @@ becomes a worker and every transactional assumption must be re-examined.
 | `conditional-start.event.bpmn` | Condition-triggered start                                                            |
 | `subprocess-test.bpmn`         | Embedded subprocess scoping                                                          |
 | `asynchornous-test.bpmn`       | `asyncBefore` job-executor continuations                                             |
-| `leave-management.bpmn`        | End-to-end example: request → balance check (delegate) → manager user task → outcome |
+| `leave-management.bpmn`        | End-to-end example: request → balance check (delegate) → manager, then HR user tasks |
 
 `src/test/resources/7.12-bpmn-dmn-files/` adds boundary events, error throw/catch,
 BPMN-in-BPMN (call activities), connectors, task listeners, incidents from failed
 expressions, and a DMN table (`Numbernature.dmn`).
 
-Leave-management flow:
+Leave-management flow (a straight line: the delegate only logs the balance, nothing branches on it yet):
 
 ```mermaid
 flowchart LR
-    S((start)) --> B["LeaveBalanceCheck<br/>(JavaDelegate)"]
-    B --> G{balance ok?}
-    G -->|yes| M[/Manager approval<br/>user task/]
-    G -->|no| R((rejected))
-    M -->|approve| A((approved))
-    M -->|reject| R
+    S(("Apply Leave")) --> B["Check-Leave Balance<br/>LeaveBalanceCheck (JavaDelegate)"]
+    B --> M[/"Manager Approval<br/>user task, assignee manager"/]
+    M --> H[/"HR Approval<br/>user task, assignee hr"/]
+    H --> E(("Completed"))
 ```
 
 <a id="6-java-delegates-listeners--async-continuations"></a>
@@ -201,7 +199,7 @@ exhausted.
 <a id="7-running-the-project"></a>
 ## <span style="color:hsl(23,80%,58%)">7. 🚀 Running the project</span>
 
-Prereqs: Java 21, Maven, MySQL on `localhost:3306` (`root`/`password` — the schema
+Prereqs: Java 27, Maven, MySQL on `localhost:3306` (`root`/`password` — the schema
 `camunda` auto-creates). `docker compose up -d mysql` starts one (MySQL 8.4).
 
 > MySQL defaults to `REPEATABLE_READ`; Camunda 7.20+ refuses to start on it (ENGINE-12019).
@@ -211,6 +209,14 @@ Prereqs: Java 21, Maven, MySQL on `localhost:3306` (`root`/`password` — the sc
 ```bash
 mvn spring-boot:run
 ```
+
+> **Java 27.** The pom compiles with `release` 27 and the app runs on JDK 27, even though Camunda
+> 7.24 is only certified up to Java 21. The risky part is bytecode parsing: Spring 6.2 scans the
+> compiled classes with its own ASM fork, and a parser that rejects class files newer than it
+> knows would stop the app at startup. It doesn't: `ApplicationSmokeTest` boots the whole app
+> (engine, REST API, webapps) on JDK 27 in every build. It was also checked by hand against
+> MySQL 8.4: all 13 process models deploy, and the `leave-management` call below runs the delegate and
+> stops at *Manager Approval*. If a future JDK breaks this, lower `java.version` in `pom.xml`.
 
 | Thing                            | URL                                           |
 |----------------------------------|-----------------------------------------------|
@@ -225,11 +231,15 @@ curl -s -X POST http://localhost:8080/engine-rest/process-definition/key/leave-m
   -d '{"variables":{"empName":{"value":"himansu"},"days":{"value":3,"type":"Integer"}}}'
 ```
 
-Tests: `mvn verify` (uses H2 + `camunda.cfg.xml`, no MySQL needed). JUnit 5 with
-`camunda-bpm-junit5`, `camunda-bpm-assert` and the community process-test-coverage extension
-(report under `target/process-test-coverage/`). `BpmnClassReferencesTest` fails the build when a
-`camunda:class` in a model doesn't resolve — the engine itself only notices at runtime
-(ENGINE-09008), which is how four models shipped pointing at a stale package.
+Tests: `mvn verify` (H2 only, no MySQL needed):
+
+<ul>
+
+- `CamundaIntegrationTest` — engine-level BPMN test on the in-memory engine from `camunda.cfg.xml`: JUnit 5 with `camunda-bpm-junit5`, `camunda-bpm-assert` and the community process-test-coverage extension (report under `target/process-test-coverage/`)
+- `ApplicationSmokeTest` — boots the whole Spring Boot app on an in-memory H2 (`test` profile), checks that every model auto-deploys and walks `leave-management` through both user tasks
+- `BpmnClassReferencesTest` — fails the build when a `camunda:class` or a listener `class` in a model doesn't resolve. The engine itself only notices at runtime (ENGINE-09008), which is how four models once shipped pointing at a stale package
+
+</ul>
 
 <a id="8-the-camunda-webapps"></a>
 ## <span style="color:hsl(161,80%,58%)">8. 🔀 The Camunda webapps</span>
@@ -248,10 +258,21 @@ instance and see the exact path the token took.
 <a id="9-dmn-decision-tables"></a>
 ## <span style="color:hsl(298,80%,58%)">9. 🔹 DMN decision tables</span>
 
-`Numbernature.dmn` shows the companion standard to BPMN: **DMN** decision tables evaluate
-business rules (hit policies, FEEL-ish expressions) and are invoked from BPMN via a
-business-rule task. Rules change without redeploying diagrams — the classic
-"decision logic belongs to the business" separation.
+**DMN** is the companion standard to BPMN: decision tables evaluate business rules (hit
+policies, FEEL expressions) and are invoked from BPMN via a business-rule task. Rules change
+without redeploying diagrams — the classic "decision logic belongs to the business" separation.
+
+<ul>
+
+- `check-adult.dmn` (deployed with the app) — the decision behind the `adult-impl` business-rule task in `task-learning.bpmn`: `age >= 18` → `"adult"`, otherwise `"child"`, stored in `adult-or-child`
+- `Numbernature.dmn` (test resources) — a three-rule table (`0`, `>0`, `<0`) classifying a number
+
+</ul>
+
+The same model classifies the age twice, once with the script task before it. That script is
+JUEL (`${age >= 18 ? 'adult' : 'child'}`) because the JDK has had no built-in JavaScript engine
+since Nashorn was removed in Java 15: a `scriptFormat="js"` task fails at runtime unless GraalJS
+is on the classpath.
 
 <a id="10-best-practices--gotchas"></a>
 ## <span style="color:hsl(76,80%,58%)">10. ⚠️ Best practices & gotchas</span>
@@ -295,7 +316,7 @@ curl -s -X POST localhost:8081/api/orders -H 'Content-Type: application/json' \
 ```
 
 Stack (as of Sep 2026): Camunda **8.9.21** on Spring Boot **4.0.8** (the Boot line 8.9 is built
-on) via `camunda-spring-boot-starter`. 8.8 renamed the SDK: `ZeebeClient` → `CamundaClient`,
+on) via `camunda-spring-boot-starter`, compiled for Java 27 like the C7 app. 8.8 renamed the SDK: `ZeebeClient` → `CamundaClient`,
 `io.camunda.zeebe.spring.client.annotation.*` → `io.camunda.client.annotation.*`, and
 `camunda.client.zeebe.*` properties → `camunda.client.*`. Gotcha: Boot 4.0.8 pins httpclient5
 5.5.2, but the 8.9 client needs 5.6 (`NoSuchMethodError: disableContentCompression`), so the pom

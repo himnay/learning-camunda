@@ -42,15 +42,10 @@
       <bpmn:outgoing>Flow_1u1ncnb</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="Flow_1u1ncnb" sourceRef="send-task" targetRef="script-task" />
-    <bpmn:scriptTask id="script-task" name="script-task" scriptFormat="js" camunda:resultVariable="output">
+    <bpmn:scriptTask id="script-task" name="script-task" scriptFormat="juel" camunda:resultVariable="output">
       <bpmn:incoming>Flow_1u1ncnb</bpmn:incoming>
       <bpmn:outgoing>Flow_11ayjtz</bpmn:outgoing>
-      <bpmn:script>print(age)
-if(age &gt;= 18){
-output='adult';
-}else{
-output='child';
-}</bpmn:script>
+      <bpmn:script>${age &gt;= 18 ? 'adult' : 'child'}</bpmn:script>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_11ayjtz" sourceRef="script-task" targetRef="adult-impl" />
     <bpmn:businessRuleTask id="adult-impl" name="adult-impl" camunda:resultVariable="adult-or-child" camunda:decisionRef="check-adult" camunda:mapDecisionResult="singleEntry">

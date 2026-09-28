@@ -35,6 +35,8 @@ class ApplicationSmokeTest {
 
     @Test
     void everyMainModelIsAutoDeployed() {
+        assertThat(repositoryService.createDecisionDefinitionQuery().decisionDefinitionKey("check-adult").count())
+                .isEqualTo(1);
         assertThat(repositoryService.createProcessDefinitionQuery().latestVersion().list())
                 .extracting(ProcessDefinition::getKey)
                 .contains(
@@ -60,5 +62,29 @@ class ApplicationSmokeTest {
 
         taskService.complete(next.getId());
         assertThat(runtimeService.createProcessInstanceQuery().processInstanceId(instance.getId()).count()).isZero();
+    }
+
+    @Test
+    void tasksLearningClassifiesTheAgeWithTheScriptTaskAndTheDecisionTable() {
+        assertThat(walkTasksLearning(20L))
+                .containsEntry("output", "adult")           // JUEL script task
+                .containsEntry("adult-or-child", "adult")   // check-adult.dmn via the business-rule task
+                .containsEntry("global-gender", "MaleGlobal");
+        assertThat(walkTasksLearning(12L))
+                .containsEntry("output", "child")
+                .containsEntry("adult-or-child", "child");
+    }
+
+    /** Completes the age form; every automated step up to the receive task then runs in that call. */
+    private Map<String, Object> walkTasksLearning(long age) {
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey("tasks-learning");
+        Task ageForm = taskService.createTaskQuery().processInstanceId(instance.getId()).singleResult();
+        assertThat(ageForm.getTaskDefinitionKey()).isEqualTo("user-task");
+
+        taskService.complete(ageForm.getId(), Map.of("age", age));
+
+        assertThat(runtimeService.createExecutionQuery()
+                .processInstanceId(instance.getId()).activityId("receive-task").count()).isEqualTo(1);
+        return runtimeService.getVariables(instance.getId());
     }
 }

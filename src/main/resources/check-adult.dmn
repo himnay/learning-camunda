@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decision behind the "adult-impl" business-rule task in task-learning.bpmn:
+     classifies the "age" collected by its first user task. -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="check-adult-definitions" name="check-adult" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="check-adult" name="Adult or child?">
+    <decisionTable id="check-adult-table" hitPolicy="UNIQUE">
+      <input id="input-age" label="Age">
+        <inputExpression id="input-age-expression" typeRef="long">
+          <text>age</text>
+        </inputExpression>
+      </input>
+      <output id="output-adult-or-child" label="Adult or child" name="adult-or-child" typeRef="string" />
+      <rule id="rule-adult">
+        <inputEntry id="rule-adult-age">
+          <text>&gt;= 18</text>
+        </inputEntry>
+        <outputEntry id="rule-adult-result">
+          <text>"adult"</text>
+        </outputEntry>
+      </rule>
+      <rule id="rule-child">
+        <inputEntry id="rule-child-age">
+          <text>&lt; 18</text>
+        </inputEntry>
+        <outputEntry id="rule-child-result">
+          <text>"child"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
