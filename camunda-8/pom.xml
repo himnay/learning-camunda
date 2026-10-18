@@ -25,6 +25,8 @@
          httpclient5 5.5.2 that Spring Boot 4.0.8 manages (NoSuchMethodError at startup otherwise) -->
     <httpclient5.version>5.6.4</httpclient5.version>
     <httpcore5.version>5.4.4</httpcore5.version>
+    <!-- Boot 4.0.8 manages Lombok 1.18.46, which fails on JDK 27's javac -->
+    <lombok.version>1.18.48</lombok.version>
   </properties>
 
   <dependencies>
@@ -60,6 +62,19 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- JDK 23+ runs annotation processors only when declared -->
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
