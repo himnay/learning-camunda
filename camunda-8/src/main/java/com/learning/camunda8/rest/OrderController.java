@@ -1,5 +1,6 @@
 package com.learning.camunda8.rest;
 
+import com.learning.camunda8.dto.OrderRequest;
 import io.camunda.client.CamundaClient;
 import io.camunda.client.api.response.ProcessInstanceEvent;
 import java.util.Map;
@@ -28,8 +29,6 @@ public class OrderController {
     public OrderController(CamundaClient camundaClient) {
         this.camundaClient = camundaClient;
     }
-
-    public record OrderRequest(String orderId, double amount) {}
 
     /** Creates order. */
     @PostMapping

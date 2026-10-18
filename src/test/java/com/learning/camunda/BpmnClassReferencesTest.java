@@ -29,8 +29,8 @@ class BpmnClassReferencesTest {
         return Arrays.stream(new PathMatchingResourcePatternResolver().getResources("file:src/main/resources/*.bpmn"));
     }
 
-    @ParameterizedTest(name = "{0}")
     @MethodSource("models")
+    @ParameterizedTest(name = "{0}")
     void camundaClassReferencesResolve(Resource model) throws IOException {
         Matcher m = CAMUNDA_CLASS.matcher(model.getContentAsString(StandardCharsets.UTF_8));
         while (m.find()) {
