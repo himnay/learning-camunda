@@ -4,6 +4,7 @@ import com.learning.camunda8.dto.OrderRequest;
 import io.camunda.client.CamundaClient;
 import io.camunda.client.api.response.ProcessInstanceEvent;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,16 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
  * the job workers then pick up the work asynchronously.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/orders")
 public class OrderController {
 
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
 
     private final CamundaClient camundaClient;
-
-    public OrderController(CamundaClient camundaClient) {
-        this.camundaClient = camundaClient;
-    }
 
     /** Creates order. */
     @PostMapping
